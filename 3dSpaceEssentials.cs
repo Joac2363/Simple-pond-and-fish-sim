@@ -2,13 +2,13 @@ using System;
 
 namespace SpaceEssentials
 {
-	public class Vector()
+	public class Vector
 	{
 		public double x;
 		public double y;
 		public double z;
 
-		public Vector(double X, double Y, double Z) : this()
+		public Vector(double X, double Y, double Z)
 		{
 			x = X; y = Y; z = Z;
 		}
