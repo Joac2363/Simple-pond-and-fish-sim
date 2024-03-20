@@ -2,12 +2,13 @@ using System;
 using SpaceEssentials;
 namespace SimEssentials
 {
-    }
     public class Organism : SimObject
     {
-        public Organism(Vector position) : base(position)
+        double speed;
+        // double sensing distance
+        public Organism(Vector position, double size, double speed) : base(position, size)
         {
-
+            this.speed = speed;
         }
         public void test()
         {

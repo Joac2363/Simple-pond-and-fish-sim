@@ -4,11 +4,17 @@ namespace SimEssentials
 {
     public class SimObject
     {
+        public static List<SimObject> allSimObjects;
         public Vector position;
         public double size; // Is always treated as a radius. Yes everything is a sphere :)
 
         public SimObject(Vector position, double size)
         {
+            if (allSimObjects == null) 
+            {
+                allSimObjects = new List<SimObject>();
+            }
+            SimObject.allSimObjects.Add(this);
             this.position = position;
             this.size = size;
         }
@@ -19,17 +25,5 @@ namespace SimEssentials
 
 
     }
-    public class Organism : SimObject
-    {
-        public Organism(Vector position) : base(position)
-        {
-
-        }
-        public void test()
-        {
-            Console.WriteLine("Succes");
-        }
-
-        // Private void Move(Vector direction) 
-    }
+    
 }
