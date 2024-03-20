@@ -18,6 +18,12 @@ namespace SpaceEssentials
 			return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2));
 		}
 
+		public Vector Normalize()
+		{
+			double len = Len();
+			return new Vector(x, y, z) / len;
+		}
+
 		public static Vector operator +(Vector a, Vector b)
 		{
 			double x = a.x + b.x;
@@ -37,6 +43,7 @@ namespace SpaceEssentials
 
 			return vec;
 		}
+
 		public static Vector operator *(Vector a, double b)
 		{
 			double x = a.x * b;
@@ -47,6 +54,16 @@ namespace SpaceEssentials
 			return vec;
 		}
 
-	}
+        public static Vector operator /(Vector a, double b)
+        {
+            double x = a.x / b;
+            double y = a.y / b;
+            double z = a.z / b;
+            Vector vec = new Vector(x, y, z);
+
+            return vec;
+        }
+
+    }
 
 }
