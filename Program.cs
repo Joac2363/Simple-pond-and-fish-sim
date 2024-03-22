@@ -6,17 +6,19 @@ class Program
     
     public static void Main()
     {
-              
-
-        foreach (SimObject obj in SimObject.allSimObjects) 
+        Vector vOne = new Vector(1, 2, 3);
+        Vector vTwo = new Vector(-1, -2, -3);
+        new SimObject(vOne, 7);
+        new SimObject(vTwo, 5);
+        foreach (SimObject obj in SimObject.allSimObjects)
         {
-            if (obj is Organism)
+            Console.WriteLine("new object");
+            foreach (SimObject simobject in obj.FindColissions())
             {
-                Organism organism = (Organism)obj; // Cast SimObject to Organism
-                organism.test();
+                Console.WriteLine(simobject.position.x);
             }
         }
-        
-        //string myString = Console.ReadLine();
+
+        string myString = Console.ReadLine();
     }
 }

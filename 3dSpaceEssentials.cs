@@ -8,7 +8,7 @@ namespace SpaceEssentials
 		public double y;
 		public double z;
 
-		public Vector(double X, double Y, double Z)
+		public Vector(double X, double Y, double Z) 
 		{
 			x = X; y = Y; z = Z;
 		}
