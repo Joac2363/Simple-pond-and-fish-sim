@@ -63,6 +63,13 @@ namespace SpaceEssentials
 
             return vec;
         }
+		public void print()
+		{
+			string str = string.Format("x,y,z : {0}, {1}, {2}", x, y, z);
+
+
+			Console.WriteLine(str);
+		}
 
     }
 
