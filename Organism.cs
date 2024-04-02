@@ -17,10 +17,9 @@ namespace SimEssentials
         
         public void Move()
         {
-            position.print();
             position += direction * speed;
-            position.print();
         }
+        // The math in the following functions look wierd, but they work. Use radians.
         public void RotateX(double angle)
         {
             double x = direction.x;

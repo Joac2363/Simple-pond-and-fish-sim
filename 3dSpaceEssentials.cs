@@ -65,7 +65,7 @@ namespace SpaceEssentials
         }
 		public void print()
 		{
-			string str = string.Format("x,y,z : {0}, {1}, {2}", x, y, z);
+			string str = string.Format("x,y,z : {0} ; {1} ; {2}", x, y, z);
 
 
 			Console.WriteLine(str);
