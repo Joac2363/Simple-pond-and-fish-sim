@@ -1,5 +1,7 @@
 using System;
 using SpaceEssentials;
+using System.Collections.Generic;
+
 namespace SimEssentials
 {
     public class SimObject
@@ -18,11 +20,46 @@ namespace SimEssentials
             this.position = position;
             this.size = size;
         }
+        
+        public double GetDistanceTo(SimObject other) 
+        {
+            return (position - other.position).Len();
+        }
 
-        // Private bool CheckColiding() returns bool
-        // Private bool CheckColission(SimObject other) returns bool
-        // Private FindColissions() reutrns list of SimObject
+        public bool CheckColission(SimObject other)
+        {
+            return GetDistanceTo(other) <= size + other.size;
+        }
 
+        public bool CheckColiding()
+        {
+            bool isColiding = false;
+            foreach (SimObject obj in allSimObjects) 
+            { 
+                if (CheckColission(obj))
+                {
+                    isColiding = true; break;
+                }
+            }
+            return isColiding;
+        }
+
+        public List<SimObject> FindColissions() 
+        {
+            List<SimObject> list = new List<SimObject>();
+            foreach (SimObject obj in allSimObjects)
+            {
+                if (obj != this)
+                {
+                    if (CheckColission(obj))
+                    {
+                        list.Add(obj);
+                    }
+                }
+                
+            }
+            return list;
+        }
 
     }
     
