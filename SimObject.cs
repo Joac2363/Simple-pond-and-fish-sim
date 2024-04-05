@@ -61,6 +61,11 @@ namespace SimEssentials
             return list;
         }
 
+        public void Destroy() // Will remove object completely from simulation
+        {
+            SimObject.allSimObjects.Remove(this);
+        }
+
     }
     
 }
