@@ -5,22 +5,56 @@ namespace SimEssentials
 {
     public class Organism : SimObject
     {
-        double viewDistance;
-        double speed; // Measued in units pr. update - Subject to change
-        double rotationSpeed; // Measured in degrees pr. update - Subject to change
-        double saturationValue;
-        Vector targetPos;
-
+        public static List<string> types;
+        public static List<int> population;
+        public double viewDistance;
+        public double speed; // Measued in units pr. update - Subject to change
+        public double rotationSpeed; // Measured in degrees pr. update - Subject to change
+        public double saturationValue;
+        public Vector targetPos;
+        public string type;
         public Vector direction;
+        
 
-        public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, double rotationSpeed, Vector direction) : base(position, size)
+        public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, double rotationSpeed, Vector direction, string type) : base(position, size)
         {
             this.saturationValue = saturationValue;
             this.viewDistance = viewDistance;
             this.speed = speed;
             this.direction = direction;
             this.rotationSpeed = rotationSpeed;
+            this.type = type;
             targetPos = null;
+
+            // make sure population and types list exit
+            if (types == null)
+            {
+                types = new List<string>();
+            }
+            if (population == null)
+            {
+                population = new List<int>();
+            }
+
+            // Check if type is new type
+            bool shouldCreateNew = true;
+            int index = 0;
+            foreach (string typ in types)
+            {
+                if (typ == type)
+                {
+                    population[index]++; // Add one to population if already exist
+                    shouldCreateNew = false;
+                    break;
+                }
+                index++;
+            }
+
+            if (shouldCreateNew) // Creation of new type
+            {
+                types.Add(type);
+                population.Add(1);
+            } 
         }
 
         public void Update()
