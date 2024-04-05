@@ -30,15 +30,13 @@ namespace SimEssentials
         }
         public void Rotate()
         {
-            //if (targetPos != null)
-            if (true)
+            if (targetPos != null)
             {
                 double xAngle = Math.Atan(direction.y / direction.z);
                 double yAngle = Math.Atan(direction.x / direction.z);
                 double zAngle = Math.Atan(direction.y / direction.x);
 
-                //Vector targetDirection = (targetPos - position).Normalize();
-                Vector targetDirection = new Vector(-1,0,0);
+                Vector targetDirection = (targetPos - position).Normalize();
 
                 double xAngleToMatch = Math.Atan(targetDirection.y / targetDirection.z);
                 double yAngleToMatch = Math.Atan(targetDirection.x / targetDirection.z);
