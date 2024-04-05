@@ -63,6 +63,27 @@ namespace SpaceEssentials
 
             return vec;
         }
+        // The math in the following functions look wierd, but they work. Use radians.
+        public void RotateX(double angle)
+        {
+			double oldY = y;
+            y = Math.Cos(angle) * y + -Math.Sin(angle) * z;
+            z = Math.Sin(angle) * oldY + Math.Cos(angle) * z;
+
+        }
+        public void RotateY(double angle)
+        {
+			double oldX = x;
+			x = Math.Cos(angle) * x + Math.Sin(angle) * z;
+            z = -Math.Sin(angle) * oldX + Math.Cos(angle) * z;
+        }
+        public void RotateZ(double angle)
+        {
+			double oldX = x;
+            x = Math.Cos(angle) * x + -Math.Sin(angle) * y;
+            y = Math.Sin(angle) * oldX + Math.Cos(angle) * y;
+        }
+        
         public override string ToString() // Used for logging (WriteLine(Vector))
         {
             return $"x;y;z -> {x} ; {y} ; {z}";
