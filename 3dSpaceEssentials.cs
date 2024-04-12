@@ -53,6 +53,10 @@ namespace SpaceEssentials
 
 			return vec;
 		}
+        public static double operator *(Vector a, Vector b)
+        {
+			return a.x * b.x + a.y * b.y + a.z * b.z;
+        }
 
         public static Vector operator /(Vector a, double b)
         {
@@ -84,10 +88,29 @@ namespace SpaceEssentials
             y = Math.Sin(angle) * oldX + Math.Cos(angle) * y;
         }
         
+		public double GetAngle(Vector other)
+		{
+			if (other == new Vector(0,0,0) || this == new Vector(0, 0, 0))
+			{
+				return 0;
+			}
+			return Math.Acos( (this * other) / (this.Len()  * other.Len()) );
+		}
+
+        public static bool operator ==(Vector a, Vector b)
+        {
+            return a.x == b.x && a.y == b.y && a.z == b.z;
+        }
+        public static bool operator !=(Vector a, Vector b)
+        {
+            return a.x != b.x || a.y != b.y || a.z != b.z;
+        }
+
         public override string ToString() // Used for logging (WriteLine(Vector))
         {
             return $"x;y;z -> {x} ; {y} ; {z}";
         }
+
 
     }
 

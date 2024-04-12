@@ -14,7 +14,7 @@ namespace SimEssentials
         public Vector targetPos;
         public string type;
         public Vector direction;
-        
+
 
         public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, double rotationSpeed, Vector direction, string type) : base(position, size)
         {
@@ -54,7 +54,7 @@ namespace SimEssentials
             {
                 types.Add(type);
                 population.Add(1);
-            } 
+            }
         }
 
         public void Update()
@@ -66,12 +66,16 @@ namespace SimEssentials
         {
             if (targetPos != null)
             {
-                double xAngle = Math.Atan(direction.y / direction.z);
-                double yAngle = Math.Atan(direction.x / direction.z);
-                double zAngle = Math.Atan(direction.y / direction.x);
+                x0 = new Vector(0, 1, 0);
+                y0 = new Vector(1, 0, 0);
+                z0 = new Vector(1, 0, 0);
+
+                double xAngle = new Vector(0, direction.y, direction.z).GetAngle(x0) * (direction.z / Math.Abs(direction.z));
+                double yAngle = new Vector(direction.x, 0, direction.z).GetAngle(y0) * (direction.z / Math.Abs(direction.z));
+                double zAngle = new Vector(direction.x, direction.y, 0).GetAngle(z0) * (direction.y / Math.Abs(direction.y)); 
+
 
                 Vector targetDirection = (targetPos - position).Normalize();
-
                 double xAngleToMatch = Math.Atan(targetDirection.y / targetDirection.z);
                 double yAngleToMatch = Math.Atan(targetDirection.x / targetDirection.z);
                 double zAngleToMatch = Math.Atan(targetDirection.y / targetDirection.x);
@@ -80,11 +84,12 @@ namespace SimEssentials
                 double yRotation = rotationSpeed;
                 double zRotation = rotationSpeed;
 
-                double xdiff =  xAngleToMatch - xAngle;
-                if ( Math.Abs(xdiff) <= rotationSpeed )
+                double xdiff = xAngleToMatch - xAngle;
+                if (Math.Abs(xdiff) <= rotationSpeed)
                 {
                     xRotation = xdiff;
-                } else if (xdiff < 0)
+                }
+                else if (xdiff < 0)
                 {
                     xRotation = -rotationSpeed;
                 }
@@ -107,6 +112,7 @@ namespace SimEssentials
                     yRotation = 0;
                 }
 
+
                 double zdiff = zAngleToMatch - zAngle;
                 if (Math.Abs(zdiff) <= rotationSpeed)
                 {
@@ -124,17 +130,20 @@ namespace SimEssentials
 
                 if (xRotation != 0)
                 {
+                    Console.WriteLine("x");
                     direction.RotateX(xRotation);
                     direction = direction.Normalize();
                 }
 
                 if (yRotation != 0)
-                { 
+                {
+                    Console.WriteLine("y");
                     direction.RotateY(yRotation);
                     direction = direction.Normalize();
                 }
                 if (zRotation != 0)
                 {
+                    Console.WriteLine("z");
                     direction.RotateZ(zRotation);
                     direction = direction.Normalize();
                 }
@@ -144,8 +153,8 @@ namespace SimEssentials
         {
             position += direction * speed;
         }
-        
-        
+
+
         public SomeClass FindNearest<SomeClass>(List<SimObject> objs) where SomeClass : class
             // Will check for nearest object of class SomeClass (or subclass). This requires the SomeClass to be compatible with the .GetDistanceTo(obj) method
             // Proper use : ObjectRefference.FindNearest<InsertClassNameHere>(ListRefference)
