@@ -66,9 +66,9 @@ namespace SimEssentials
         {
             if (targetPos != null)
             {
-                x0 = new Vector(0, 1, 0);
-                y0 = new Vector(1, 0, 0);
-                z0 = new Vector(1, 0, 0);
+                Vector x0 = new Vector(0, 1, 0);
+                Vector y0 = new Vector(1, 0, 0);
+                Vector z0 = new Vector(1, 0, 0);
 
                 double xAngle = new Vector(0, direction.y, direction.z).GetAngle(x0) * (direction.z / Math.Abs(direction.z));
                 double yAngle = new Vector(direction.x, 0, direction.z).GetAngle(y0) * (direction.z / Math.Abs(direction.z));
@@ -76,9 +76,9 @@ namespace SimEssentials
 
 
                 Vector targetDirection = (targetPos - position).Normalize();
-                double xAngleToMatch = Math.Atan(targetDirection.y / targetDirection.z);
-                double yAngleToMatch = Math.Atan(targetDirection.x / targetDirection.z);
-                double zAngleToMatch = Math.Atan(targetDirection.y / targetDirection.x);
+                double xAngleToMatch = new Vector(0, targetDirection.y, targetDirection.z).GetAngle(x0) * (targetDirection.z / Math.Abs(targetDirection.z));
+                double yAngleToMatch = new Vector(targetDirection.x, 0, targetDirection.z).GetAngle(y0) * (targetDirection.z / Math.Abs(targetDirection.z));
+                double zAngleToMatch = new Vector(targetDirection.x, targetDirection.y, 0).GetAngle(z0) * (targetDirection.y / Math.Abs(targetDirection.y));
 
                 double xRotation = rotationSpeed;
                 double yRotation = rotationSpeed;
@@ -93,10 +93,7 @@ namespace SimEssentials
                 {
                     xRotation = -rotationSpeed;
                 }
-                else
-                {
-                    xRotation = 0;
-                }
+                
 
                 double ydiff = yAngleToMatch - yAngle;
                 if (Math.Abs(ydiff) <= rotationSpeed)
@@ -107,10 +104,7 @@ namespace SimEssentials
                 {
                     yRotation = -rotationSpeed;
                 }
-                else
-                {
-                    yRotation = 0;
-                }
+                
 
 
                 double zdiff = zAngleToMatch - zAngle;
@@ -122,10 +116,7 @@ namespace SimEssentials
                 {
                     zRotation = -rotationSpeed;
                 }
-                else
-                {
-                    zRotation = 0;
-                }
+                
 
 
                 if (xRotation != 0)

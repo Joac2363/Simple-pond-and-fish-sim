@@ -1,5 +1,5 @@
 ﻿using SpaceEssentials;
-//using SimEssentials;
+using SimEssentials;
 
 class Program
 {
@@ -21,24 +21,32 @@ class Program
 
         //string myString = Console.ReadLine();
 
-        Vector a = new Vector(1, 1, 0);
-        Vector b = new Vector(1, 0, 0);
-        Console.WriteLine(a.GetAngle(b));
+        //Vector a = new Vector(1, 1, 0);
+        //Vector b = new Vector(1, 0, 0);
+        //Console.WriteLine(a.GetAngle(b));
 
-        //Organism a = new Organism(new Vector(0, 0, 0), 1, 0, 4, 0.1, 1, new Vector(0.1, 0.1, 1), "hunter");
-        //foreach (SimObject obj in SimObject.allSimObjects)
-        //{
-        //    Organism org = obj as Organism;
-        //    org.targetPos = new Vector(1, 1, -10);
-        //}
-        //for (int i = 0; i < 100; i++)
-        //{
-        //    foreach (SimObject obj in SimObject.allSimObjects)
-        //    {
-        //        Organism org = obj as Organism;
-        //        org.Update();
-        //        Console.WriteLine(org.position);
-        //    }
-        //}
+        Organism a = new Organism(new Vector(0, 0, 0), 1, 0, 4, 0.1, 0.1, new Vector(0.1, 0.1, 1), "hunter");
+        foreach (SimObject obj in SimObject.allSimObjects)
+        {
+            Organism org = obj as Organism;
+            org.targetPos = new Vector(1, 1, -10);
+        }
+        for (int i = 0; i < 100; i++)
+        {
+            foreach (SimObject obj in SimObject.allSimObjects)
+            {
+                Organism org = obj as Organism;
+                org.Update();
+                Console.WriteLine($"Direction: {org.direction}, TagetDirection{(org.targetPos-org.position).Normalize()}, Position: {org.position}, iteration: {i}");
+            }
+        }
+
+
+
+
+
+
+        string myString = Console.ReadLine();
+
     }
 }
