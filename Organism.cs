@@ -11,7 +11,7 @@ namespace SimEssentials
         public double speed; // Measued in units pr. update - Subject to change
         public double rotationSpeed; // Measured in degrees pr. update - Subject to change
         public double saturationValue;
-        public Vector targetPos;
+        public SimObject target;
         public string type;
         public Vector direction;
 
@@ -21,10 +21,10 @@ namespace SimEssentials
             this.saturationValue = saturationValue;
             this.viewDistance = viewDistance;
             this.speed = speed;
-            this.direction = direction;
+            this.direction = direction.Normalize();
             this.rotationSpeed = rotationSpeed;
             this.type = type;
-            targetPos = null;
+            target = null;
 
             // make sure population and types list exit
             if (types == null)
@@ -59,14 +59,43 @@ namespace SimEssentials
 
         public void Update()
         {
+            DefineTarget();
             Rotate();
             Move();
+            Eat(); 
+            
         }
-        public void Rotate()
+        void Eat()
         {
-            if (targetPos != null)
+            if (target != null) 
             {
-                direction = (targetPos - position).Normalize();
+                //Console.WriteLine(this.GetDistanceTo(target));
+                if (this.GetDistanceTo(target) <= speed)
+                {
+                    Food food = target as Food;
+                    if (food != null)
+                    {
+                        saturationValue += food.saturationValue;
+                        target.QueueDestroy();
+                        target = null;
+                        Console.WriteLine("Ate");
+                    }
+                }
+            }
+        }
+        void DefineTarget()
+        {
+            SimObject nearestFood = FindNearest<Food>(SimObject.allSimObjects, viewDistance);
+            if (nearestFood != null)
+            {
+                target = nearestFood;
+            }
+        }
+        void Rotate()
+        {
+            if (target != null)
+            {
+                direction = (target.position - position).Normalize();
             }
             //if (targetPos != null)
             //{
@@ -150,7 +179,7 @@ namespace SimEssentials
         }
 
 
-        public SomeClass FindNearest<SomeClass>(List<SimObject> objs) where SomeClass : class
+        public SomeClass FindNearest<SomeClass>(List<SimObject> objs, double maxDist) where SomeClass : class
             // Will check for nearest object of class SomeClass (or subclass). This requires the SomeClass to be compatible with the .GetDistanceTo(obj) method
             // Proper use : ObjectRefference.FindNearest<InsertClassNameHere>(ListRefference)
         {
@@ -161,7 +190,7 @@ namespace SimEssentials
                 if (obj is SomeClass && obj != this) // If obj is the same class as SomeClass (or any subclass) -> truthy
                 {
                     double distance = this.GetDistanceTo(obj);
-                    if (distance < shortestDistance)
+                    if (distance < shortestDistance && distance <= maxDist)
                     {
                         shortestDistance = distance;
                         nearestObj = obj as SomeClass;

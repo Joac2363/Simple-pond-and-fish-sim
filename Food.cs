@@ -4,7 +4,7 @@ namespace SimEssentials
 {
     public class Food : SimObject
     {
-        double saturationValue;
+        public double saturationValue;
 
         public Food(Vector position, double size, double saturationValue) : base(position, size)
         {

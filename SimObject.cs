@@ -7,6 +7,7 @@ namespace SimEssentials
     public class SimObject
     {
         public static List<SimObject> allSimObjects;
+        public static List<SimObject> objectsToBeRemoved;
         public Vector position;
         public double size; // Is always treated as a radius. Yes everything is a sphere :)
 
@@ -61,9 +62,29 @@ namespace SimEssentials
             return list;
         }
 
-        public void Destroy() // Will remove object completely from simulation
+        public static void Destroy() // Will remove object completely from simulation
         {
-            SimObject.allSimObjects.Remove(this);
+            if (objectsToBeRemoved == null)
+            {
+                objectsToBeRemoved = new List<SimObject>();
+            }
+            foreach (SimObject obj in SimObject.objectsToBeRemoved)
+            {
+                if (obj != null)
+                {
+                    SimObject.allSimObjects.Remove(obj);
+                }
+            }
+            SimObject.objectsToBeRemoved.Clear();
+
+        }
+        public void QueueDestroy()
+        {
+            if (objectsToBeRemoved == null)
+            {
+                objectsToBeRemoved = new List<SimObject>();
+            }
+            SimObject.objectsToBeRemoved.Add(this);
         }
 
     }
