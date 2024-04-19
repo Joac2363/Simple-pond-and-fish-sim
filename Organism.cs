@@ -9,20 +9,19 @@ namespace SimEssentials
         public static List<int> population;
         public double viewDistance;
         public double speed; // Measued in units pr. update - Subject to change
-        public double rotationSpeed; // Measured in degrees pr. update - Subject to change
         public double saturationValue;
         public SimObject target;
         public string type;
         public Vector direction;
+        public bool gender; // Male = 1 Female = 0
+        public bool matingReady;
 
 
-        public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, double rotationSpeed, Vector direction, string type) : base(position, size)
+        public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, string type) : base(position, size)
         {
             this.saturationValue = saturationValue;
             this.viewDistance = viewDistance;
             this.speed = speed;
-            this.direction = direction.Normalize();
-            this.rotationSpeed = rotationSpeed;
             this.type = type;
             target = null;
 
@@ -55,6 +54,8 @@ namespace SimEssentials
                 types.Add(type);
                 population.Add(1);
             }
+
+            //gender = 
         }
 
         public void Update()
@@ -67,10 +68,10 @@ namespace SimEssentials
         }
         void Eat()
         {
-            if (target != null) 
+            if (target != null)
             {
-                //Console.WriteLine(this.GetDistanceTo(target));
-                if (this.CheckColission(target))
+                // If colliding then eat
+                if (this.CheckColission(target)) 
                 {
                     Food food = target as Food;
                     if (food != null)
