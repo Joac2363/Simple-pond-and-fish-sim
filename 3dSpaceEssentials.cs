@@ -24,6 +24,11 @@ namespace SpaceEssentials
 			return new Vector(x, y, z) / len;
 		}
 
+		public static Vector Zero()
+		{
+			return new Vector(0, 0, 0);
+		}
+
 		public static Vector operator +(Vector a, Vector b)
 		{
 			double x = a.x + b.x;
