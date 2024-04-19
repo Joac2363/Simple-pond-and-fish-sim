@@ -55,7 +55,8 @@ namespace SimEssentials
                 population.Add(1);
             }
 
-            //gender = 
+            gender = PRandom.boolean();
+            matingReady = false;
         }
 
         public void Update()
