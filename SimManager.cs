@@ -14,8 +14,13 @@ namespace SimEssentials
 		public static double foodSize = 1;
 		public static double foodValue = 1;
 		public static DataRecorder dataRecorder = new DataRecorder();
+		public static int simTime = 0;
+		public static bool endSim = false;
 
-		public static void StartSim()
+		static int foodSpawnAmount = 0;
+        static int foodSpawnRate = 0;
+
+        public static void StartSim()
 		{
 			int numberOfOrganismTypes;
 
@@ -51,8 +56,8 @@ namespace SimEssentials
 				double organismSpeed;
 				string organismTypeName;
 
-				Console.WriteLine("Organisme");
-				while (true)
+				Console.WriteLine($"Organisme nummer {i+1}");
+				while (true) //gets 
 				{
 					Console.WriteLine("Hvor mange af denne type af organismer skal der være i simulationens start?");
 					string nOWO = Console.ReadLine(); // String version of numberOfWantedOrganism
@@ -129,8 +134,8 @@ namespace SimEssentials
                     try
                     {
                         oSp = oSp.Trim();
-                        organismViewDistance = Double.Parse(oSp);
-                        if (organismViewDistance < 0)
+                        organismSpeed = Double.Parse(oSp);
+                        if (organismSpeed < 0)
                         {
                             Console.WriteLine("Organisms hastighed må ikke være mindre end nul");
                             Double.Parse("wrong");
@@ -143,8 +148,113 @@ namespace SimEssentials
                     }
 
                 }
+				
+				while (true)
+				{
+                    Console.WriteLine("Hvad skal denne type af organismer hedde?");
+                    string oTM = Console.ReadLine(); // String version of organismTypeName
 
+                    oTM = oTM.Trim();
+
+					Console.WriteLine($"Skal denne type af organisme hedde: '{oTM}'? Skriv 'ja' hvis navnet er rigitigt");
+                    string answer = Console.ReadLine();
+                    if(answer == "ja")
+                    {
+						organismTypeName = oTM;
+						break;
+                    }
+                }
+
+				MakeXOrganisms(numberOfWantedOrganism, organismSize, organismViewDistance, organismSpeed, organismTypeName);
             }
+
+			while (true)
+			{
+                Console.WriteLine("Hvor ofte skal der fremkomme mad? (kan kun være hele positive tal, skriv '0', hvis mad ikke skal frem komme):");
+
+                string sFR = Console.ReadLine(); // String version of foodSpawnRate
+
+                try
+                {
+                    sFR = sFR.Trim();
+                    foodSpawnRate = Int32.Parse(sFR);
+                    if (foodSpawnRate < 0)
+                    {
+                        Console.WriteLine("Tallet kan ikke være negativt!");
+                        Int32.Parse("wrong");
+                    }
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Fejlede! prøv venligst igen");
+                }
+            }
+
+			if (foodSpawnRate != 0)
+			{
+				while (true)
+				{
+					Console.WriteLine("Hvor meget mad skal der fremkomme? (kan kun være hele positive tal.):");
+
+					string sFA = Console.ReadLine(); // String version of foodSpawnAmount
+
+					try
+					{
+						sFA = sFA.Trim();
+						foodSpawnAmount = Int32.Parse(sFA);
+						if (foodSpawnAmount <= 0)
+						{
+							Console.WriteLine("skal være 1 eller mere!");
+							Int32.Parse("wrong");
+						}
+						break;
+					}
+					catch (FormatException)
+					{
+						Console.WriteLine("Fejlede! prøv venligst igen");
+					}
+				}
+			}
+
+            RunSim();
+		}
+
+		public static void Update()
+		{
+			//temp
+			ForceStopSim();
+
+			foreach (SimObject simObj in SimObject.allSimObjects)
+			{
+				if (simObj is Organism)
+				{
+					Organism org = simObj as Organism;
+					org.Update();
+				}
+			} //Runs through all Organisms and updates them
+
+			if (foodSpawnRate != 0)
+			{
+				if (simTime % foodSpawnRate == 0)
+				{
+					SpawnXFood(foodSpawnAmount);
+				}
+			}
+
+		}
+
+        public static void RunSim()
+		{
+			while (true)
+			{
+				simTime++;
+				Update();
+				if (endSim)
+				{
+					break;
+				}
+			}
 		}
 
 		public static void MakeXOrganisms (int numberOfOrganism, double organismSize, double organismViewDistance, double organismSpeed, string organismType) 
@@ -162,6 +272,15 @@ namespace SimEssentials
 			{
 				Vector position = new Vector(random.Next(-spawnSphereRadius, spawnSphereRadius), random.Next(-spawnSphereRadius, spawnSphereRadius), random.Next(-spawnSphereRadius, spawnSphereRadius));
 				new Food(position, foodSize, foodValue);
+			}
+		}
+
+		private static void ForceStopSim()
+		{
+			if (simTime > 1000000)
+			{
+				Console.WriteLine("Force stopping simulation, time limit exceded");
+				endSim = true;
 			}
 		}
 

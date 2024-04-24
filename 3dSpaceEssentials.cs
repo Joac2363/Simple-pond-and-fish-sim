@@ -55,6 +55,7 @@ namespace SpaceEssentials
 
 			return vec;
 		}
+
         public static double operator *(Vector a, Vector b)
         {
 			return a.x * b.x + a.y * b.y + a.z * b.z;
@@ -77,12 +78,14 @@ namespace SpaceEssentials
             z = Math.Sin(angle) * oldY + Math.Cos(angle) * z;
 
         }
+
         public void RotateY(double angle)
         {
 			double oldX = x;
 			x = Math.Cos(angle) * x + Math.Sin(angle) * z;
             z = -Math.Sin(angle) * oldX + Math.Cos(angle) * z;
         }
+
         public void RotateZ(double angle)
         {
 			double oldX = x;
@@ -107,6 +110,7 @@ namespace SpaceEssentials
 			}
 			return a.x == b.x && a.y == b.y && a.z == b.z;
         }
+
         public static bool operator !=(Vector a, Vector b)
         {
 			//Console.WriteLine($"{a is null} , {b is null}");

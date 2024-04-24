@@ -101,6 +101,7 @@ namespace SimEssentials
             SimObject.objectsToBeRemoved.Clear();
 
         }
+
         public void QueueDestroy()
         {
             if (objectsToBeRemoved == null)
