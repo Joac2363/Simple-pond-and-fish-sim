@@ -4,6 +4,7 @@ namespace SpaceEssentials
 {
 	public class Vector
 	{
+		public static readonly Vector Zero = new Vector(0, 0, 0);
 		public double x;
 		public double y;
 		public double z;
@@ -24,10 +25,6 @@ namespace SpaceEssentials
 			return new Vector(x, y, z) / len;
 		}
 
-		public static Vector Zero()
-		{
-			return new Vector(0, 0, 0);
-		}
 
 		public static Vector operator +(Vector a, Vector b)
 		{

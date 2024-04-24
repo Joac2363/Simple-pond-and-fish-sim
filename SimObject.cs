@@ -24,6 +24,11 @@ namespace SimEssentials
         
         public double GetDistanceTo(SimObject other) 
         {
+            Vector distanceVector = (position - other.position);
+            if (distanceVector == Vector.Zero)
+            {
+                return 0;
+            }
             return (position - other.position).Len();
         }
 
@@ -58,6 +63,24 @@ namespace SimEssentials
                     }
                 }
                 
+            }
+            return list;
+        }
+
+        public List<SimObject> FindWithin(double maxDistance)
+        {
+            List<SimObject> list = new List<SimObject>();
+            foreach (SimObject obj in allSimObjects)
+            {
+                if (obj != this)
+                {
+                    Console.WriteLine(this.GetDistanceTo(obj));
+                    if (this.GetDistanceTo(obj) <= maxDistance)
+                    {
+                        list.Add(obj);
+                    }
+                }
+
             }
             return list;
         }

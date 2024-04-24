@@ -61,11 +61,27 @@ namespace SimEssentials
 
         public void Update()
         {
+            UpdateMatingStatus();
             DefineTarget();
             Rotate();
             Move();
-            Eat(); 
+            if (matingReady){Mate();} 
+            else{Eat();}
             
+        }
+        void Mate()
+        {
+            return;
+        }
+        void UpdateMatingStatus()
+        {
+            if (saturationValue >= 10)
+            {
+                matingReady = true;
+            } else
+            {
+                matingReady = false;
+            }
         }
         void Eat()
         {
@@ -87,11 +103,35 @@ namespace SimEssentials
         }
         void DefineTarget()
         {
-            SimObject nearestFood = FindNearest<Food>(SimObject.allSimObjects, viewDistance);
-            if (nearestFood != null)
+            if (matingReady)
             {
-                target = nearestFood;
-            } 
+                List<Organism> closePotentialMatingPartners = FindAllNear<Organism>(SimObject.allSimObjects, viewDistance);
+
+                if (closePotentialMatingPartners.Count() == 0)
+                {
+                    Console.WriteLine("esc");
+                    return;
+                }
+
+                double currentDistance = double.MaxValue;
+                foreach (Organism obj in closePotentialMatingPartners)
+                {
+                    double newDistance = this.GetDistanceTo(obj);
+                    if (newDistance < currentDistance)
+                    {
+                        target = obj;
+                        currentDistance = newDistance;
+                    }
+                }
+            }
+            else
+            {
+                SimObject nearestFood = FindNearest<Food>(SimObject.allSimObjects, viewDistance);
+                if (nearestFood != null)
+                {
+                    target = nearestFood;
+                } 
+            }
         }
         void Rotate()
         {
@@ -130,6 +170,38 @@ namespace SimEssentials
             }
             return nearestObj;
         }
+        public List<SomeClass> FindAllNear<SomeClass>(List<SimObject> objs, double maxDist) where SomeClass : class
+        {
+            List<SomeClass> nearObjects = new List<SomeClass>();
+            List<SimObject> withinRange = this.FindWithin(maxDist);
+            foreach (SimObject obj in  withinRange)
+            {
+                if (obj is SomeClass)
+                {
+                    nearObjects.Add(obj as SomeClass);
+                }
+            }
+            return nearObjects;
+        }
+
+        //public static bool operator ==(Organism a, Organism b)
+        //{
+        //    if (a is null || b is null)
+        //    {
+        //        return false;
+        //    }
+        //    return a.x == b.x && a.y == b.y && a.z == b.z;
+        //}
+
+        //public static bool operator !=(Organism a, Organism b)
+        //{
+        //    Console.WriteLine($"{a is null} , {b is null}");
+        //    if (a is null || b is null)
+        //    {
+        //        return false;
+        //    }
+        //    return a.x != b.x || a.y != b.y || a.z != b.z;
+        //}
 
     }
 }
