@@ -74,7 +74,6 @@ namespace SimEssentials
             {
                 if (obj != this)
                 {
-                    Console.WriteLine(this.GetDistanceTo(obj));
                     if (this.GetDistanceTo(obj) <= maxDistance)
                     {
                         list.Add(obj);

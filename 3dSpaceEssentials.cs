@@ -113,7 +113,6 @@ namespace SpaceEssentials
 
         public static bool operator !=(Vector a, Vector b)
         {
-			//Console.WriteLine($"{a is null} , {b is null}");
             if (a is null || b is null)
             {
                 return false;
