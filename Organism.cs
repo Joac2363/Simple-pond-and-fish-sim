@@ -2,11 +2,13 @@ using System;
 using SpaceEssentials;
 using SimEssentials;
 namespace SimEssentials
-{
+{ 
     public class Organism : SimObject
     {
+        
         public static List<string> types;
         public static List<int> population;
+        public static List<int> hieracy;
         public double viewDistance;
         public double speed; // Measued in units pr. update - Subject to change
         public double saturationValue;
@@ -15,6 +17,7 @@ namespace SimEssentials
         public Vector direction;
         public bool gender; // Male = 1 Female = 0
         public bool matingReady;
+        public int positionInHieracy;
 
 
         public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, string type) : base(position, size)
@@ -25,38 +28,31 @@ namespace SimEssentials
             this.type = type;
             target = null;
 
-            // make sure population and types list exit
-            if (types == null)
-            {
-                types = new List<string>();
-            }
+            // make sure population list exits
             if (population == null)
             {
                 population = new List<int>();
             }
 
-            // Check if type is new type
-            bool shouldCreateNew = true;
+            // Add 1 to population and assign position in hieracy
             int index = 0;
             foreach (string typ in types)
             {
                 if (typ == type)
                 {
                     population[index]++; // Add one to population if already exist
-                    shouldCreateNew = false;
+                    positionInHieracy = hieracy[index];
                     break;
                 }
                 index++;
             }
+            
 
-            if (shouldCreateNew) // Creation of new type
-            {
-                types.Add(type);
-                population.Add(1);
-            }
 
             gender = PRandom.boolean();
             matingReady = false;
+
+            
         }
 
         public void Update()
@@ -65,14 +61,34 @@ namespace SimEssentials
             DefineTarget();
             Rotate();
             Move();
-            if (matingReady){Mate();} 
+            LoseSaturation();
+            if (matingReady){HandleMate();} 
             else{Eat();}
             
         }
-        void Mate()
+
+        void LoseSaturation()
         {
-            return;
+            saturationValue -= (1f / 1000f);
+            if (saturationValue <= 0f)
+            {
+                this.QueueDestroy();
+            }
         }
+
+        void HandleMate()
+        {
+            if (target is null) // If no mating partner, then stop mating
+            {
+                return;
+            }
+            if (this.CheckColission(target))
+            {
+                Organism.Reproduce(this, target as Organism);
+            }
+        }
+        
+
         void UpdateMatingStatus()
         {
             if (saturationValue >= 10)
@@ -85,20 +101,23 @@ namespace SimEssentials
         }
         void Eat()
         {
-            if (target != null)
+            if (target == null) { return; }
+            // If colliding then eat
+            if (this.CheckColission(target)) 
             {
-                // If colliding then eat
-                if (this.CheckColission(target)) 
+                Food targetAsFood = target as Food;
+                if (targetAsFood != null)
                 {
-                    Food food = target as Food;
-                    if (food != null)
-                    {
-                        saturationValue += food.saturationValue;
-                        target.QueueDestroy();
-                        target = null;
-
-                    }
+                    saturationValue += targetAsFood.saturationValue;
                 }
+                Organism targetAsOrganism = target as Organism;
+                if (targetAsOrganism != null)
+                {
+                    saturationValue += targetAsOrganism.saturationValue;
+                }
+
+                target.QueueDestroy();
+                target = null;
             }
         }
         void DefineTarget()
@@ -109,13 +128,15 @@ namespace SimEssentials
 
                 if (closePotentialMatingPartners.Count() == 0)
                 {
-                    Console.WriteLine("esc");
+                    Console.WriteLine("No available mating partners");
                     return;
                 }
 
                 double currentDistance = double.MaxValue;
                 foreach (Organism obj in closePotentialMatingPartners)
                 {
+                    if (obj.gender == gender){continue;} // If same gender, continue
+                    if (obj.type != type){continue;}     // If not same type, continue
                     double newDistance = this.GetDistanceTo(obj);
                     if (newDistance < currentDistance)
                     {
@@ -126,11 +147,36 @@ namespace SimEssentials
             }
             else
             {
-                SimObject nearestFood = FindNearest<Food>(SimObject.allSimObjects, viewDistance);
-                if (nearestFood != null)
+                Food nearestFood = FindNearest<Food>(SimObject.allSimObjects, viewDistance) as Food;
+                Organism nearestPrey = FindNearestPrey();
+
+                if (nearestFood == null && nearestPrey == null)
+                {
+                    target = null;
+                    return;
+                } 
+
+                if (nearestFood == null)
+                {
+                    target = nearestPrey;
+                    return;
+                }
+                if (nearestPrey == null)
                 {
                     target = nearestFood;
-                } 
+                    return;
+                }
+
+                bool preyHasShortestDistance = (this.GetDistanceTo(nearestPrey) < this.GetDistanceTo(nearestFood));
+                if (preyHasShortestDistance)
+                {
+                    target = nearestPrey;
+                }
+                else
+                {
+                    target = nearestFood;
+                }
+
             }
         }
         void Rotate()
@@ -140,7 +186,7 @@ namespace SimEssentials
                 direction = (target.position - position).Normalize();
             } else
             {
-                direction = new Vector(0, 0, 0);
+                direction = new Vector(0, 1, 0);
             }
 
         }
@@ -149,6 +195,27 @@ namespace SimEssentials
             position += direction * speed;
         }
 
+        public Organism FindNearestPrey()
+        {
+            List<SimObject> nearObjects = this.FindWithin(viewDistance);
+            double shortestDistance = double.MaxValue;
+            Organism prey = null;
+            foreach (SimObject obj in nearObjects)
+            {
+                if (obj is not Organism) { continue; }
+                Organism organism = obj as Organism;
+                if (organism.positionInHieracy >= positionInHieracy) { continue; }
+
+                double distance = this.GetDistanceTo(organism);
+                if (distance < shortestDistance)
+                {
+                    prey = organism;
+                    shortestDistance = distance;
+                }
+
+            }
+            return prey;
+        }
 
         public SomeClass FindNearest<SomeClass>(List<SimObject> objs, double maxDist) where SomeClass : class
             // Will check for nearest object of class SomeClass (or subclass). This requires the SomeClass to be compatible with the .GetDistanceTo(obj) method
@@ -184,24 +251,42 @@ namespace SimEssentials
             return nearObjects;
         }
 
-        //public static bool operator ==(Organism a, Organism b)
-        //{
-        //    if (a is null || b is null)
-        //    {
-        //        return false;
-        //    }
-        //    return a.x == b.x && a.y == b.y && a.z == b.z;
-        //}
 
-        //public static bool operator !=(Organism a, Organism b)
-        //{
-        //    Console.WriteLine($"{a is null} , {b is null}");
-        //    if (a is null || b is null)
-        //    {
-        //        return false;
-        //    }
-        //    return a.x != b.x || a.y != b.y || a.z != b.z;
-        //}
+        
+
+        public static void Reproduce(Organism main, Organism other)
+        {
+            main.saturationValue *= (2f/3f);
+            other.saturationValue *= (2f/3f);
+            double size = GetAverage(main.size, other.size);
+            double saturation = GetAverage(main.saturationValue, other.saturationValue);
+            double viewDistance = GetAverage(main.viewDistance, other.viewDistance);
+            double speed = GetAverage(main.speed, other.speed);
+            
+            for (int i = 0;i < 1; i++) // This loop is currently redundant, but may be usefull later, if we want fish to produce more than one new fish per reproduction
+            {
+                new ReproducedOrganism(main.position, size, saturation, viewDistance, speed, main.type);
+            }
+            
+            double GetAverage(double x, double y)
+            {
+                return (x + y) / 2;
+            }
+        }
+        
+        public static void AddNewType(string typeName, int placeInHieracy)
+        {
+            if (Organism.types == null)
+            {
+                Organism.types = new List<string>();
+                Organism.population = new List<int>();
+                Organism.hieracy = new List<int>();
+            }
+            Organism.types.Add(typeName);
+            Organism.population.Add(1);
+            Organism.hieracy.Add(placeInHieracy);
+
+        }
 
     }
 }
