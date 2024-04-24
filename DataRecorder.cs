@@ -43,7 +43,7 @@ namespace DataRecording
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    Console.WriteLine("Fejlede lokation ikke fundet, prøv venligst igen");
+                    Console.WriteLine("Fejlede! lokation ikke fundet, prøv venligst igen");
                 }
             }
 
