@@ -50,14 +50,57 @@ namespace SimEssentials
 
 			for (int i = 0; i < numberOfOrganismTypes; i++)
 			{
-				int numberOfWantedOrganism;
+                string organismTypeName;
+				int organismHieracyPosition;
+                int numberOfWantedOrganism;
 				double organismSize;
 				double organismViewDistance;
 				double organismSpeed;
-				string organismTypeName;
-
+				
 				Console.WriteLine($"Organisme nummer {i+1}");
-				while (true) //gets 
+
+                while (true) // gets type name
+                {
+                    Console.WriteLine("Hvad skal denne type af organismer hedde?");
+                    string oTM = Console.ReadLine(); // String version of organismTypeName
+
+                    oTM = oTM.Trim();
+
+                    Console.WriteLine($"Skal denne type af organisme hedde: '{oTM}'? Skriv 'ja' hvis navnet er rigitigt");
+                    string answer = Console.ReadLine();
+                    if (answer == "ja")
+                    {
+                        organismTypeName = oTM;
+                        break;
+                    }
+                }
+
+                while (true) //gets types place in hieracy
+                {
+                    Console.WriteLine("Hvor højt skal organismen være i fødekæden, hvor 0 er i bunden?");
+                    string oHP = Console.ReadLine(); // String version of organismHieracyPosition
+
+                    try
+                    {
+                        oHP = oHP.Trim();
+                        organismHieracyPosition = Int32.Parse(oHP);
+                        if (organismHieracyPosition < 0)
+                        {
+                            Console.WriteLine("Den kan ikke have en negativt position i fødekæden!");
+                            Int32.Parse("wrong");
+                        }
+                        break;
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Fejlede! prøv venligst igen");
+                    }
+
+                }
+
+				Organism.AddNewType(organismTypeName, organismHieracyPosition);
+
+                while (true) //gets 
 				{
 					Console.WriteLine("Hvor mange af denne type af organismer skal der være i simulationens start?");
 					string nOWO = Console.ReadLine(); // String version of numberOfWantedOrganism
@@ -147,22 +190,6 @@ namespace SimEssentials
                         Console.WriteLine("Fejlede! prøv venligst igen");
                     }
 
-                }
-				
-				while (true)
-				{
-                    Console.WriteLine("Hvad skal denne type af organismer hedde?");
-                    string oTM = Console.ReadLine(); // String version of organismTypeName
-
-                    oTM = oTM.Trim();
-
-					Console.WriteLine($"Skal denne type af organisme hedde: '{oTM}'? Skriv 'ja' hvis navnet er rigitigt");
-                    string answer = Console.ReadLine();
-                    if(answer == "ja")
-                    {
-						organismTypeName = oTM;
-						break;
-                    }
                 }
 
 				MakeXOrganisms(numberOfWantedOrganism, organismSize, organismViewDistance, organismSpeed, organismTypeName);

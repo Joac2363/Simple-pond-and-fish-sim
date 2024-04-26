@@ -9,6 +9,9 @@ namespace SimEssentials
         public static List<string> types;
         public static List<int> population;
         public static List<int> hieracy;
+
+        public static double matingSaturationRequirement = 10;
+
         public double viewDistance;
         public double speed; // Measued in units pr. update - Subject to change
         public double saturationValue;
@@ -18,6 +21,7 @@ namespace SimEssentials
         public bool gender; // Male = 1 Female = 0
         public bool matingReady;
         public int positionInHieracy;
+        
 
 
         public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, string type) : base(position, size)
@@ -88,10 +92,9 @@ namespace SimEssentials
             }
         }
         
-
         void UpdateMatingStatus()
         {
-            if (saturationValue >= 10)
+            if (saturationValue >= matingSaturationRequirement)
             {
                 matingReady = true;
             } else
@@ -99,6 +102,7 @@ namespace SimEssentials
                 matingReady = false;
             }
         }
+
         void Eat()
         {
             if (target == null) { return; }
@@ -120,6 +124,7 @@ namespace SimEssentials
                 target = null;
             }
         }
+
         void DefineTarget()
         {
             if (matingReady)
@@ -128,7 +133,6 @@ namespace SimEssentials
 
                 if (closePotentialMatingPartners.Count() == 0)
                 {
-                    Console.WriteLine("No available mating partners");
                     return;
                 }
 
@@ -179,6 +183,7 @@ namespace SimEssentials
 
             }
         }
+
         void Rotate()
         {
             if (target != null)
@@ -190,6 +195,7 @@ namespace SimEssentials
             }
 
         }
+
         void Move()
         {
             position += direction * speed;
@@ -237,6 +243,7 @@ namespace SimEssentials
             }
             return nearestObj;
         }
+
         public List<SomeClass> FindAllNear<SomeClass>(List<SimObject> objs, double maxDist) where SomeClass : class
         {
             List<SomeClass> nearObjects = new List<SomeClass>();
@@ -250,9 +257,6 @@ namespace SimEssentials
             }
             return nearObjects;
         }
-
-
-        
 
         public static void Reproduce(Organism main, Organism other)
         {
@@ -283,7 +287,7 @@ namespace SimEssentials
                 Organism.hieracy = new List<int>();
             }
             Organism.types.Add(typeName);
-            Organism.population.Add(1);
+            Organism.population.Add(0);
             Organism.hieracy.Add(placeInHieracy);
 
         }
