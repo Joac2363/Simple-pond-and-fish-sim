@@ -73,6 +73,7 @@ namespace DataRecording
         {
             if (SimManager.simTime % SimManager.recordingFrequency == 0)
             {
+                Console.WriteLine("Recording Datapoint");
                 AddDataPoint();
             }
         }

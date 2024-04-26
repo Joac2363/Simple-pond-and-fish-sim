@@ -75,7 +75,8 @@ namespace SimEssentials
                 }
             }
 
-            Console.WriteLine("Hvor mange forskellige typer af Organismer vil dy have? (kan kun være hele positive tal):");
+            Console.WriteLine("Hvor mange forskellige typer af Organismer vil du have? (kan kun være hele positive tal):");
+                
 			while (true)
 			{ 
 				string nOOT = Console.ReadLine(); // String version of numberOfOrganismTypes
@@ -293,6 +294,8 @@ namespace SimEssentials
 				}
 			}
 
+
+            Console.WriteLine("Starting simulation");
             RunSim();
 		}
 
@@ -320,7 +323,7 @@ namespace SimEssentials
 
 			dataRecorder.CheckRecord();
             
-            if (simTime <= recordingTime)
+            if (simTime >= recordingTime)
             {
                 endSim = true;
             }
@@ -335,6 +338,7 @@ namespace SimEssentials
 				Update();
 				if (endSim)
 				{
+                    Console.WriteLine("Ending Simulation");
 					break;
 				}
 			}
@@ -360,7 +364,7 @@ namespace SimEssentials
 
 		private static void ForceStopSim()
 		{
-			if (simTime > 1000000)
+			if (simTime > 100000000)
 			{
 				Console.WriteLine("Force stopping simulation, time limit exceded");
 				endSim = true;
