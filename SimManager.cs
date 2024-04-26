@@ -20,7 +20,7 @@ namespace SimEssentials
         static int foodSpawnRate = 0;
 
 		public static DataRecorder dataRecorder = new DataRecorder();
-		static int recordingFrequency;
+		public static int recordingFrequency;
 		static int recordingTime;
 
 
@@ -319,6 +319,11 @@ namespace SimEssentials
 			}
 
 			dataRecorder.CheckRecord();
+            
+            if (simTime <= recordingTime)
+            {
+                endSim = true;
+            }
 
 		}
 

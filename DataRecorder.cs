@@ -57,10 +57,10 @@ namespace DataRecording
             {
                 if (firstLine)
                 {
-                    sting header = "";
-                    foreach (sting type in Organism.types)
+                    string header = "";
+                    foreach (string type in Organism.types)
                     {
-                        header += $"Organism {type} population; "
+                        header += $"Organism {type} population; ";
                     }
                     outputFile.Write(header + "time");
                     firstLine = false;
