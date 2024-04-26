@@ -9,20 +9,21 @@ namespace DataRecording
     public class DataRecorder
     {
         string filePath = ""; //Filepath
-        string fileName = "SimulationData.cvs";
+        string fileName = "SimulationData.csv";
+        bool firstLine = true;
 
         public string RecordDataPoint()
         {
-            string returnString = "x, y, z";
-            
+            //string returnString = "";
+            string returnString = "\n";
 
-            foreach (SimObject obj in SimObject.allSimObjects)
+            foreach (int orgPop in Organism.population)
             {
-                string x = obj.position.x.ToString();
-                string y = obj.position.y.ToString();
-                string z = obj.position.z.ToString();
-                returnString += $"\n{x}, {y}, {z}";
+                returnString += $"{orgPop};";
             }
+
+            returnString += $"{SimManager.simTime}";
+            
 
             return returnString;
         }
@@ -38,7 +39,7 @@ namespace DataRecording
                 try
                 {
                     givenPath = givenPath.Trim();
-                    File.WriteAllText(Path.Combine(givenPath, fileName), "text");
+                    File.WriteAllText(Path.Combine(givenPath, fileName), "");
                     break;
                 }
                 catch (DirectoryNotFoundException)
@@ -48,6 +49,32 @@ namespace DataRecording
             }
 
             filePath = givenPath;
+        }
+
+        public void AddDataPoint()
+        {
+            using (StreamWriter outputFile = File.AppendText(Path.Combine(filePath, fileName)))
+            {
+                if (firstLine)
+                {
+                    sting header = "";
+                    foreach (sting type in Organism.types)
+                    {
+                        header += $"Organism {type} population; "
+                    }
+                    outputFile.Write(header + "time");
+                    firstLine = false;
+                }
+                outputFile.Write(RecordDataPoint());
+            }
+        }
+
+        public void CheckRecord()
+        {
+            if (SimManager.simTime % SimManager.recordingFrequency == 0)
+            {
+                AddDataPoint();
+            }
         }
     }
 

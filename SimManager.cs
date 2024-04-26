@@ -13,12 +13,17 @@ namespace SimEssentials
 		public static double baseSaturation = 5;
 		public static double foodSize = 1;
 		public static double foodValue = 1;
-		public static DataRecorder dataRecorder = new DataRecorder();
 		public static int simTime = 0;
 		public static bool endSim = false;
 
 		static int foodSpawnAmount = 0;
         static int foodSpawnRate = 0;
+
+		public static DataRecorder dataRecorder = new DataRecorder();
+		static int recordingFrequency;
+		static int recordingTime;
+
+
 
         public static void StartSim()
 		{
@@ -26,7 +31,51 @@ namespace SimEssentials
 
 			dataRecorder.AskForFilePath();
 
-			Console.WriteLine("Hvor mange forskellige typer af Organismer vil dy have? (kan kun være hele positive tal):");
+            while (true)
+            {
+                Console.WriteLine("Hvor ofte skal simulationen opsamle datapunkter");
+                string rF = Console.ReadLine(); // String version of recordingFrequency
+
+                try
+                {
+                    rF = rF.Trim();
+                    recordingFrequency = Int32.Parse(rF);
+                    if (recordingFrequency <= 0)
+                    {
+                        Console.WriteLine("Det må ikke være nul eller mindre");
+                        Int32.Parse("wrong");
+                    }
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Fejlede! prøv venligst igen");
+                }
+            }
+                
+            while (true)
+            {
+                Console.WriteLine("Hvor lang tid skal simulationen kører?");
+                string rT = Console.ReadLine(); // String version of recordingTime
+
+                try
+                {
+                    rT = rT.Trim();
+                    recordingTime = Int32.Parse(rT);
+                    if (recordingTime <= 0)
+                    {
+                        Console.WriteLine("Det må ikke være nul eller mindre");
+                        Int32.Parse("wrong");
+                    }
+                    break;
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Fejlede! prøv venligst igen");
+                }
+            }
+
+            Console.WriteLine("Hvor mange forskellige typer af Organismer vil dy have? (kan kun være hele positive tal):");
 			while (true)
 			{ 
 				string nOOT = Console.ReadLine(); // String version of numberOfOrganismTypes
@@ -268,6 +317,8 @@ namespace SimEssentials
 					SpawnXFood(foodSpawnAmount);
 				}
 			}
+
+			dataRecorder.CheckRecord();
 
 		}
 
