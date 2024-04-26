@@ -313,6 +313,9 @@ namespace SimEssentials
 				}
 			} //Runs through all Organisms and updates them
 
+            SimObject.Destroy();
+            ReproducedOrganism.InstantiateAll();
+
 			if (foodSpawnRate != 0)
 			{
 				if (simTime % foodSpawnRate == 0)
