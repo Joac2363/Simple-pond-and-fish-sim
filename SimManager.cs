@@ -12,7 +12,7 @@ namespace SimEssentials
 		public static int spawnSphereRadius = 50;
 		public static double baseSaturation = 5;
 		public static double foodSize = 1;
-		public static double foodValue = 1;
+		public static double foodValue = 5;
 		public static int simTime = 0;
 		public static bool endSim = false;
 
