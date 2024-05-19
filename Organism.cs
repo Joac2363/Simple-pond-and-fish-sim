@@ -21,7 +21,13 @@ namespace SimEssentials
         public bool gender; // Male = 1 Female = 0
         public bool matingReady;
         public int positionInHieracy;
-        
+
+
+        public double fromParent = 0;
+        public double fromFood = 0;
+        public double lostNat = 0;
+        public double lostChild = 0;
+        public double fromothers = 0;
 
 
         public Organism(Vector position, double size, double saturationValue, double viewDistance, double speed, string type) : base(position, size)
@@ -55,7 +61,7 @@ namespace SimEssentials
 
             gender = PRandom.boolean();
             matingReady = false;
-
+            fromParent = saturationValue;
             
         }
 
@@ -77,6 +83,7 @@ namespace SimEssentials
             if (saturationValue <= 0f)
             {
                 this.QueueDestroy();
+                population[types.IndexOf(type)] -= 1;
             }
         }
 
@@ -113,11 +120,14 @@ namespace SimEssentials
                 if (targetAsFood != null)
                 {
                     saturationValue += targetAsFood.saturationValue;
+                    fromFood += targetAsFood.saturationValue;
+                    targetAsFood.saturationValue = 0;
                 }
                 Organism targetAsOrganism = target as Organism;
                 if (targetAsOrganism != null)
                 {
                     saturationValue += targetAsOrganism.saturationValue;
+                    fromothers += targetAsOrganism.saturationValue;
                 }
 
                 target.QueueDestroy();
@@ -139,6 +149,7 @@ namespace SimEssentials
                 double currentDistance = double.MaxValue;
                 foreach (Organism obj in closePotentialMatingPartners)
                 {
+                    if (!obj.matingReady) { continue; }
                     if (obj.gender == gender){continue;} // If same gender, continue
                     if (obj.type != type){continue;}     // If not same type, continue
                     double newDistance = this.GetDistanceTo(obj);
@@ -261,7 +272,9 @@ namespace SimEssentials
         public static void Reproduce(Organism main, Organism other)
         {
             main.saturationValue *= (2f/3f);
+            main.lostChild += main.saturationValue / 2d;
             other.saturationValue *= (2f/3f);
+            other.lostChild += other.saturationValue / 2d;
             double size = GetAverage(main.size, other.size);
             double saturation = GetAverage(main.saturationValue, other.saturationValue);
             double viewDistance = GetAverage(main.viewDistance, other.viewDistance);

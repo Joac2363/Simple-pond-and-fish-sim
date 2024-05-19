@@ -13,7 +13,7 @@ namespace SimEssentials
 		public static int spawnSphereRadius = 50; // controls the area where organism can spawn within
 		public static double baseSaturation = 5; // the staarting amount of saturation organisms have
 		public static double foodSize = 1; // the size of food
-		public static double foodValue = 5; // the value of food
+		public static double foodValue = 1; // the value of food
 
         // controll the 'time' in the simulation
 		public static int simTime = 0;
