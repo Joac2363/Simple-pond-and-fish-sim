@@ -126,8 +126,13 @@ namespace SimEssentials
                 Organism targetAsOrganism = target as Organism;
                 if (targetAsOrganism != null)
                 {
-                    saturationValue += targetAsOrganism.saturationValue;
-                    fromothers += targetAsOrganism.saturationValue;
+                    if (targetAsOrganism.saturationValue > 0)
+                    {
+                        saturationValue += targetAsOrganism.saturationValue;
+                        targetAsOrganism.saturationValue = 0;
+                        population[types.IndexOf(targetAsOrganism.type)] -= 1;
+                        fromothers += targetAsOrganism.saturationValue;
+                    }
                 }
 
                 target.QueueDestroy();
