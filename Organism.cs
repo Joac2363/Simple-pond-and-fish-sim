@@ -66,9 +66,9 @@ namespace SimEssentials
             Rotate();
             Move();
             LoseSaturation();
-            if (matingReady){HandleMate();} 
-            else{Eat();}
-            
+            if (matingReady) { HandleMate(); }
+            else { Eat(); }
+
         }
 
         void LoseSaturation()
@@ -191,7 +191,7 @@ namespace SimEssentials
                 direction = (target.position - position).Normalize();
             } else
             {
-                direction = new Vector(0, 1, 0);
+                direction = new Vector(0, 0, 0) ;
             }
 
         }
